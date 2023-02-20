@@ -9,9 +9,12 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 let camera, scene, root, renderer, renderer2, controls, glbLoader;
 let vib1, vib2;
+let solsys_rotation;
 const objects = [];
 
 let raycaster;
+
+let mixerAnimPlanetes 
 
 
 let prevTime = performance.now();
@@ -59,7 +62,6 @@ function init() {
   camera.position.z = -1950;
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color( 0xffffff );
   //scene.fog = new THREE.Fog( 0xffffff, 0, 1750 );
 
   root = new THREE.Object3D()
@@ -71,7 +73,12 @@ function init() {
   light.position.set( 0.5, 1, 0.75 );
   scene.add( light );
 
+  const light1 = new THREE.AmbientLight( 0x404040 );
+  light.position.set( 0.5, 1, 0.75 );
+  scene.add( light1 );
+
   root.add( light );
+  root.add( light1 );
 
   controls = new PointerLockControls( camera, document.body );
 
@@ -94,55 +101,48 @@ function init() {
 
   raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
 
-  // // floor
 
-  // let floorGeometry = new THREE.PlaneGeometry( 20000, 20000, 100, 100 );
-  // floorGeometry.rotateX( - Math.PI / 2 );
+  // galaxy 
 
-  // // vertex displacement
+  var loader = new THREE.TextureLoader();
+  loader.load('./models/8k_stars_milky_way.jpg', function ( texture ) {
+      var geometry = new THREE.SphereGeometry( 5500, 20, 20 );
 
-  // let position = floorGeometry.attributes.position;
+      var material = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
+      material.side = THREE.BackSide
+      var mesh = new THREE.Mesh( geometry, material );
+      mesh.position.set(-500, 0, -0)
+      scene.add( mesh );
+  } );
 
-  // for ( let i = 0, l = position.count; i < l; i ++ ) {
-
-  //   vertex.fromBufferAttribute( position, i );
-
-  //   vertex.x += Math.random() * 20 - 10;
-  //   vertex.y += Math.random() * 2;
-  //   vertex.z += Math.random() * 20 - 10;
-
-  //   position.setXYZ( i, vertex.x, vertex.y, vertex.z );
-
-  // }
-
-  // floorGeometry = floorGeometry.toNonIndexed(); // ensure each face has unique vertices
-
-  // position = floorGeometry.attributes.position;
-  // const colorsFloor = [];
-
-  // for ( let i = 0, l = position.count; i < l; i ++ ) {
-
-  //   color.setHSL( Math.random() * 0.3 + color_factor, color_factor, Math.random() * 0.25 + color_factor );
-  //   colorsFloor.push( color.r, color.g, color.b );
-
-  // }
-
-  // floorGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colorsFloor, 3 ) );
-
-  // const floorMaterial = new THREE.MeshBasicMaterial( { vertexColors: true } );
-
-  // const floor = new THREE.Mesh( floorGeometry, floorMaterial );
-  // scene.add( floor );
 
 
   //load glb model of expo center
   var expoCENTER = null
-  glbLoader.load( './models/scifi-showroom_reduit.glb', function ( gltf )
+  glbLoader.load( './models/scifi-showroom_reduit_epure_sans_pod.glb', function ( gltf )
   {
     expoCENTER = gltf.scene;
     expoCENTER.scale.set(100, 100, 100)
-    expoCENTER.position.set(-2050, 800, -0)
+    expoCENTER.position.set(-2100, 800, -0)
     root.add(expoCENTER)
+  } ); 
+
+
+  var solsys = null
+  glbLoader.load( './models/solsystem_fuck_lechel.glb', function ( gltf )
+  {
+    solsys = gltf.scene;
+    solsys.scale.set(11, 11, 11)
+    solsys.position.set(2250, -530, 0)
+
+    mixerAnimPlanetes = new THREE.AnimationMixer(gltf.scene);
+    mixerAnimPlanetes.timeScale = 0.1
+    gltf.animations.forEach((o,i) => {
+      mixerAnimPlanetes.clipAction(gltf.animations[i]).play();
+    })
+
+    root.add(solsys)
+    solsys_rotation = solsys;
   } ); 
 
   //expoCENTER.position.set(0, 100, 0)
@@ -208,15 +208,24 @@ function stayInISaid() {
     camera.position.copy(center_of_exhibition)
 }
 
+const clock = new THREE.Clock()
+
 function animate() {
   if ( ctx.editMode ) {
-    ctx.boards.forEach((board) => { board.setUnselected(); })
+    ctx.boards.forEach((board) => { 
+      board.setUnselected(); 
+      console.log(board.printTransformations());
+    })
     ctx.boards[ctx.selectedBoard].setSelected();
   }
 
-  ctx.boards.forEach((board) => { 
-    console.log(board.printTransformations())
-  })
+  
+
+  if (mixerAnimPlanetes) {
+    mixerAnimPlanetes.update(clock.getDelta());
+  }
+
+  if (solsys_rotation) { solsys_rotation.rotateY(0.001) }
 
   // console.log("camera :")
   // console.log(camera.position.x); 
@@ -227,6 +236,8 @@ function animate() {
 
   if ( controls.isLocked === true ) {
     const delta = Math.min(1, ( time - prevTime ) / 1000);
+
+    
 
     velocity.x -= velocity.x * 10.0 * delta;
     velocity.z -= velocity.z * 10.0 * delta;

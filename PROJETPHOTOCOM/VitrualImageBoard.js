@@ -3,7 +3,8 @@ import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
 class VirtualImageBoard {
 
-    constructor(p_image_src, p_date, p_title, p_text, p_position) {
+    constructor(p_image_src, p_date, p_title, p_text, p_audio, p_audio_listener, p_position) {
+        this.AudioListenner = p_audio_listener;
         this.image_src = p_image_src;
         this.date = p_date;
         this.title = p_title;
@@ -16,25 +17,43 @@ class VirtualImageBoard {
         this.board  = this.build_board(); 
         this.edges  = this.build_edges();
         this.vib    = this.board.add(this.poster);
+        this.center = null;
+        this.audio  = null;
+        this.setAudio(p_audio)
+        console.log(p_audio)
     }
 
     getVIB() {return this.vib;}
 
+    getCenter(){
+        if (this.center != null) return this.center
+
+        let middle = new THREE.Vector3();
+        let geometry = this.board;
+
+        geometry.computeBoundingBox();
+        geometry.boundingBox.getSize(middle);
+
+        middle.x = middle.x / 2;
+        middle.y = middle.y / 2;
+        middle.z = middle.z / 2;
+
+        mesh.localToWorld(middle);
+        this.center = middle;
+        return middle;
+    }
 
     setUnselected() {
         if (this.selected) {
             this.vib.remove(this.edges)
             this.selected = false
         }
-        //this.board.material.color.setHex('0x991d65')
     }
-
 
     setSelected() {
         this.vib.add(this.edges)
         this.selected = true
     }
-
 
     move(vector, rotation) {
         this.vib.position.addVectors(this.vib.position, vector)
@@ -50,29 +69,9 @@ class VirtualImageBoard {
         console.log(this.countrotation)
     }
 
-
-    //getBoard() {return this.board}
-
-    //getPoster() {return this.poster}
-
     build_poster() {
         var html = `
-            <ul id="Frames">
-            <li class="Frame">
-                <img class="card-picture" src="${this.image_src}" alt="photo grenouille" />
-            </li>
-            </ul>
-            <div class="card-side">
-                <div class="card-date">
-                    <time>${this.date}</time>
-                </div>
-                <div class="card-title">
-                    <h2>${this.title}</h2>
-                </div>
-                <div class="card-text">
-                    ${this.text}
-                </div>
-            </div>
+            du texte, beaucoup de texte à mettre en dessous
         `;
 
         //card container
@@ -90,25 +89,22 @@ class VirtualImageBoard {
         object.css3dObject.element.style.opacity = "1"
         object.position.set( 0, 0, 0 )
 
-        const boxGeometry = new THREE.BoxGeometry( 660, 320, 1 ).toNonIndexed();
+        const boxGeometry = new THREE.BoxGeometry( 500 / 18 - 1, 5, 0 ).toNonIndexed();
         const boxMaterial = new THREE.MeshPhongMaterial( { opacity:0.15,color:new THREE.Color( 0x111111 ),blending:THREE.NoBlending, transparent: true} );
         const box = new THREE.Mesh( boxGeometry, boxMaterial );
 
-        box.position.addVectors(this.position, new THREE.Vector3(-this.position.x, 90, 16))
+        box.position.addVectors(this.position, new THREE.Vector3(0, -13.5, 0.5))
         box.rotation.y = 0;
         box.add(object);
         return box; 
     }
 
-
     build_edges() {
         //let geometry = new THREE.BoxGeometry( 670, 600, 30 );
         let edges = new THREE.EdgesGeometry( this.board.geometry );
         let line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xffff00 } ) );
-        
         return line;
     }
-
 
     build_board() {
             var material = new THREE.MeshPhongMaterial({
@@ -121,7 +117,7 @@ class VirtualImageBoard {
             vertexColors: true,
         })
     
-        var geometry = new THREE.BoxGeometry( 670, 600, 30 );
+        var geometry = new THREE.BoxGeometry( 500 / 18 , 376 / 18 , 1 );
     
         // give the geometry custom colors for each vertex {{
         geometry = geometry.toNonIndexed(); // ensure each face has unique vertices
@@ -137,11 +133,39 @@ class VirtualImageBoard {
     
         geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
         // }}
+        const loader = new THREE.TextureLoader()
+        material = new THREE.MeshLambertMaterial({
+            map: loader.load(this.image_src)
+        });
     
         var board = new THREE.Mesh( geometry, material );
-        board.position.addVectors(this.position, new THREE.Vector3( 0, 100, 0 ))
+        board.position.addVectors(this.position, new THREE.Vector3( 0, 33.5, 0 ))
 
         return board;
+    }
+
+    setAudio(p_audio) {
+        // load a sound and set it as the Audio object's buffer
+        let audiotmp = new THREE.Audio( this.AudioListenner );
+        let AudioLoader = new THREE.AudioLoader();
+        AudioLoader.load( 'sounds/Narration/'+p_audio, function( buffer ) {
+            audiotmp.setBuffer( buffer );
+            audiotmp.setLoop( false );
+            audiotmp.setVolume( 3.5 );
+            audiotmp
+        });
+        this.audio = audiotmp;
+    }
+
+    check_for_audio_playback(camera) {
+        if (this.audio == null) return
+
+        
+        if (camera.position.distanceTo(this.board.position) < 100) {
+            //if (!this.audio.isPlaying) this.audio.play(0);
+        } else {
+            //if (this.audio.isPlaying) this.audio.stop();
+        }
     }
 } 
 

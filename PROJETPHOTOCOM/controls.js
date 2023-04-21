@@ -39,23 +39,23 @@ export function onKeyDown( event ) {
             break;
 
         case 'Numpad8':
-            ctx.boards[ctx.selectedBoard].move( new THREE.Vector3( 10, 0, 0 ),  0 )
+            ctx.boards[ctx.selectedBoard].move( new THREE.Vector3( 0.5, 0, 0 ),  0 )
             break;
 
         case 'Numpad2':
-            ctx.boards[ctx.selectedBoard].move( new THREE.Vector3( -10, 0, 0 ), 0 )
+            ctx.boards[ctx.selectedBoard].move( new THREE.Vector3( -0.5, 0, 0 ), 0 )
             break;
 
         case 'Numpad6':
-            ctx.boards[ctx.selectedBoard].move( new THREE.Vector3( 0, 0, 10 ),  0 )
+            ctx.boards[ctx.selectedBoard].move( new THREE.Vector3( 0, 0, 0.5 ),  0 )
             break;
 
         case 'Numpad4':
-            ctx.boards[ctx.selectedBoard].move( new THREE.Vector3( 0, 0, -10 ), 0 )
+            ctx.boards[ctx.selectedBoard].move( new THREE.Vector3( 0, 0, -0.5 ), 0 )
             break;
 
         case 'Numpad3':
-            ctx.boards[ctx.selectedBoard].move( new THREE.Vector3( 0, 0, 0 ), 0.01 )
+            ctx.boards[ctx.selectedBoard].move( new THREE.Vector3( 0, 0, 0 ), 0.005 )
             break;
 
         case 'Numpad1':

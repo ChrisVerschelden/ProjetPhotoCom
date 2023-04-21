@@ -6,91 +6,95 @@ import { VirtualImageBoard } from './VitrualImageBoard.js'
 import {onKeyDown, onKeyUp} from './controls.js'
 import { ctx } from './context.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { parcours_chris } from './parcours/parcours_chris.js';
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 let camera, scene, root, renderer, renderer2, 
     controls, glbLoader, sound, footsteps_sound, 
     AudioLoader, listener, lastCameraPosition, 
-    mixerAnimPlanetes, vib1, vib2, solsys_rotation;
+    mixerAnimPlanetes, solsys_rotation;
 
-const grp_chris = new THREE.Group();
-const grp_lou   = new THREE.Group();
-const grp_actif = new THREE.Group();
+// create an AudioListener and add it to the camera
+listener = new THREE.AudioListener();
+
+const audios_actif = [];
+let grp_actif = new THREE.Group();
+grp_actif.name = "grp_actif";
 
 function init_chris() {
-  let position1 = new THREE.Vector3( 0, 0, 0 );
-  vib1 = new VirtualImageBoard("./photos/chris/_1090145.png", "12-12-2022", "un titre", "un texte", position1);
-  grp_chris.add(vib1.getVIB());
-  ctx.boards.push(vib1);
-
-  vib1.move(new THREE.Vector3( 530, 0, -1340 ), 0.94);
-
-  let position2 = new THREE.Vector3( 860, 0, 0 );
-  vib2 = new VirtualImageBoard("./photos/chris/_1090145.png", "12-12-2022", "un titre", "un texte", position2);
-  grp_chris.add(vib2.getVIB());
-  ctx.boards.push(vib2);
-
-  vib2.move(new THREE.Vector3( -780, 0, -20 ), 1.57);
+  ctx.boards = [];
+  let grp_temp = new THREE.Group();
+  parcours_chris.boards.forEach((value) => {
+    let position = new THREE.Vector3( value.start_pos.x, value.start_pos.y, value.start_pos.z );
+    let vib = new VirtualImageBoard("./photos/chris/" + value.img, value.date, value.title, value.text, "chris/"+value.audio, listener, position);
+    ctx.boards.push(vib);
+    grp_temp.add(vib.getVIB());
+    vib.move(new THREE.Vector3( value.move_to.x, value.move_to.y, value.move_to.z ),value.move_to.r);
+  })
+  grp_actif = grp_temp
+  init_base();
 }
 
 function init_lou() {
-  let position1 = new THREE.Vector3( 0, 0, 0 );
-  vib1 = new VirtualImageBoard("./photos/chris/_1090145.png", "12-12-2022", "un titre", "un texte", position1);
-  grp_lou.add(vib1.getVIB());
-  ctx.boards.push(vib1);
-
-  vib1.move(new THREE.Vector3( 530, 0, -1340 ), 0.94);
+  ctx.boards = [];
+  let grp_temp = new THREE.Group();
+  parcours_chris.boards.forEach((value) => {
+    let position = new THREE.Vector3( value.start_pos.x, value.start_pos.y, value.start_pos.z );
+    let vib = new VirtualImageBoard("./photos/louanne/" + value.img, value.date, value.title, value.text, "louanne/"+value.audio, listener, position);
+    ctx.boards.push(vib);
+    grp_temp.add(vib.getVIB());
+    vib.move(new THREE.Vector3( value.move_to.x, value.move_to.y, value.move_to.z ),value.move_to.r);
+  })
+  grp_actif.copy(grp_temp)
+  init_base();
 }
 
 let prevTime = performance.now();
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
-const vertex = new THREE.Vector3();
-const color = new THREE.Color();
 
 
 const blocker      = document.getElementById( 'blocker' );
+const loading      = document.getElementById( 'loadingScreen' )
 const instructions = document.getElementById( 'instructions' );
 const card_lou     = document.getElementById( 'profil_lou' );
 const card_chris   = document.getElementById( 'profil_chris' );
 
-let color_factor = 0.75
 
-
-card_lou.addEventListener('click',() => {
-  color_factor = 0.35
+card_lou.addEventListener('click',async () => {
+  loading.style.display = 'block';
   init_lou()
-  grp_actif.copy(grp_lou)
   start()
+  await delay(10000);
+  loading.style.display = 'none';
 })
 
-card_chris.addEventListener('click',() => {
-  color_factor = 0.55
-  init_chris()
-  grp_actif.copy(grp_chris)
-  start()
+card_chris.addEventListener('click',async () => {
+  loading.style.display = 'block';
+  init_chris();
+  start();
+  await delay(10000);
+  loading.style.display = 'none';
 })
-
-//card_chris.click()
 
 function start() {
-  init();
   animate();
   controls.lock();
 }
 
 
 
-function init() {
+function init_base() {
 
   glbLoader = new GLTFLoader();
 
-  camera = new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 5000 );
-  camera.position.y = 130;
-  camera.position.x = 1150;
-  camera.position.z = -1950;
+  camera = new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 3000 );
+  camera.position.y = 45;
+  camera.position.x = 0;
+  camera.position.z = 0;
 
-  // create an AudioListener and add it to the camera
-  listener = new THREE.AudioListener();
+
   camera.add( listener );
 
   // create a global audio source
@@ -105,6 +109,19 @@ function init() {
     sound.play();
   });
 
+
+  // create a global audio source
+  //let coucou_louanne = new THREE.Audio( listener );
+
+  // load a sound and set it as the Audio object's buffer
+  // AudioLoader = new THREE.AudioLoader();
+  // AudioLoader.load( 'sounds/Narration/global.ogg', function( buffer ) {
+  //   coucou_louanne.setBuffer( buffer );
+  //   coucou_louanne.setLoop( false );
+  //   coucou_louanne.setVolume( 0.5 );
+  //   coucou_louanne.play();
+  // });
+
   // create a global audio source
   footsteps_sound = new THREE.Audio( listener );
 
@@ -114,25 +131,7 @@ function init() {
     footsteps_sound.setBuffer( buffer );
     footsteps_sound.setLoop  ( true   );
     footsteps_sound.setVolume( 3.5    );
-
-    // Create a delay with an echo delay time
-    const delay  = new THREE.Delay(3);
-    // Add the delay to the audio source
-    footsteps_sound.add(delay);
-
-    // create reverb convolver
-    // Create a convolver with a reverb impulse response
-    const convolver = new THREE.Convolver();
-    const impulseResponseUrl = 'sounds/ImpulseResponses/SteinmanHall.wav';
-
-    AudioLoader.load(impulseResponseUrl, impulseBuffer => {
-      convolver.buffer = impulseBuffer;
-      footsteps_sound.add(convolver);
-      // Play the sound
-      footsteps_sound.play();
-    });
-
-    //footsteps_sound.connect(listener)
+    footsteps_sound.play();
   });
 
   scene = new THREE.Scene();
@@ -167,36 +166,21 @@ function init() {
 
   scene.add( controls.getObject() );
 
-
-
   document.addEventListener( 'keydown', e => onKeyDown(e) );
   document.addEventListener( 'keyup', e => onKeyUp(e) );
 
-  // galaxy 
-
-  var loader = new THREE.TextureLoader();
-  loader.load('./models/8k_stars_milky_way.jpg', function ( texture ) {
-      var geometry = new THREE.SphereGeometry( 7500, 20, 20 );
-
-      var material = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
-      material.side = THREE.BackSide
-      var mesh = new THREE.Mesh( geometry, material );
-      mesh.position.set(-500, 0, -0)
-      scene.add( mesh );
-  } );
-
-
+  scene.background = new THREE.Color( "#101010" );
 
   //load glb model of expo center
   var expoCENTER = null
-  glbLoader.load( './models/scifi-showroom_reduit_epure_sans_pod.glb', function ( gltf )
+  //glbLoader.load( './models/scifi-showroom_reduit_epure_sans_pod.glb', function ( gltf )
+  glbLoader.load( './models/galerie_photo.glb', function ( gltf )
   {
     expoCENTER = gltf.scene;
-    expoCENTER.scale.set(100, 100, 100)
-    expoCENTER.position.set(-2100, 800, -0)
+    expoCENTER.scale.set(10, 10, 10)
+    expoCENTER.position.set(0, 0, 0)
     root.add(expoCENTER)
   } ); 
-
 
   var solsys = null
   glbLoader.load( './models/solsystem_fuck_lechel.glb', function ( gltf )
@@ -211,25 +195,15 @@ function init() {
       mixerAnimPlanetes.clipAction(gltf.animations[i]).play();
     })
 
-    root.add(solsys)
+    //root.add(solsys)
     solsys_rotation = solsys;
   } ); 
 
-  //expoCENTER.position.set(0, 100, 0)
-  //root.add(expoCENTER)
-
-
-  /////// photo objects
-
-  root.add(grp_actif);  
-
   //
 
+  root.add(grp_actif); 
+
   lastCameraPosition = new THREE.Vector3();
-
-  //root.add(board)
-
-  //root.add(PhotoElement(0,0,0,0))
 
   renderer2 = new CSS3DRenderer();
   renderer2.domElement.style.position = 'absolute';
@@ -246,17 +220,21 @@ function init() {
   document.querySelector('#webgl').appendChild( renderer.domElement );
 
   //
-
   window.addEventListener( 'resize', onWindowResize );
 
 }
 
 function checkCameraMovement() {
   if (camera.position.distanceTo(lastCameraPosition) > 0.01) {
-    footsteps_sound.play(0);
+    if (!footsteps_sound.isPlaying) footsteps_sound.play(0);
   } else {
     footsteps_sound.stop();
   }
+
+  ctx.boards.forEach((value, index, array) => {
+    value.check_for_audio_playback(camera);
+  })
+
   lastCameraPosition.copy(camera.position);
 }
 
@@ -304,21 +282,21 @@ function animate() {
 
     
 
-    velocity.x -= velocity.x * 10.0 * delta;
-    velocity.z -= velocity.z * 10.0 * delta;
+    velocity.x -= velocity.x * 5.0 * delta;
+    velocity.z -= velocity.z * 5.0 * delta;
 
     direction.z = Number( ctx.controls.moveForward ) - Number( ctx.controls.moveBackward );
     direction.x = Number( ctx.controls.moveRight ) - Number( ctx.controls.moveLeft );
     direction.normalize(); // this ensures consistent movements in all directions
 
-    if ( ctx.controls.moveForward || ctx.controls.moveBackward ) velocity.z -= direction.z * 8000.0 * delta;
-    if ( ctx.controls.moveLeft || ctx.controls.moveRight ) velocity.x -= direction.x * 8000.0 * delta;
+    if ( ctx.controls.moveForward || ctx.controls.moveBackward ) velocity.z -= direction.z * 300.0 * delta;
+    if ( ctx.controls.moveLeft || ctx.controls.moveRight ) velocity.x -= direction.x * 300.0 * delta;
 
     controls.moveRight( - velocity.x * delta );
     controls.moveForward( - velocity.z * delta );
 
   }
-  stayInISaid()
+  //stayInISaid()
 
   prevTime = time;
 

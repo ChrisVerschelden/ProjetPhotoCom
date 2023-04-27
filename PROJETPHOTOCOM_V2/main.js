@@ -7,6 +7,7 @@ import {onKeyDown, onKeyUp} from './controls.js'
 import { ctx } from './context.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { parcours_chris } from './parcours/parcours_chris.js';
+import { parcours_lou } from './parcours/parcours_lou';
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -39,7 +40,7 @@ function init_chris() {
 function init_lou() {
   ctx.boards = [];
   let grp_temp = new THREE.Group();
-  parcours_chris.boards.forEach((value) => {
+  parcours_lou.boards.forEach((value) => {
     let position = new THREE.Vector3( value.start_pos.x, value.start_pos.y, value.start_pos.z );
     let vib = new VirtualImageBoard("./photos/louanne/" + value.img, value.date, value.title, value.text, "louanne/"+value.audio, listener, position);
     ctx.boards.push(vib);
@@ -174,7 +175,7 @@ function init_base() {
   //load glb model of expo center
   var expoCENTER = null
   //glbLoader.load( './models/scifi-showroom_reduit_epure_sans_pod.glb', function ( gltf )
-  glbLoader.load( './models/galerie_photo.glb', function ( gltf )
+  glbLoader.load( './models/photoGalleryV2.glb', function ( gltf )
   {
     expoCENTER = gltf.scene;
     expoCENTER.scale.set(10, 10, 10)

@@ -28,7 +28,7 @@ function init_chris() {
   let grp_temp = new THREE.Group();
   parcours_chris.boards.forEach((value) => {
     let position = new THREE.Vector3( value.start_pos.x, value.start_pos.y, value.start_pos.z );
-    let vib = new VirtualImageBoard("./photos/chris/" + value.img, value.date, value.title, value.text, "chris/"+value.audio, listener, position);
+    let vib = new VirtualImageBoard("photos/chris/" + value.img, value.date, value.title, value.text, "chris/"+value.audio, listener, position);
     ctx.boards.push(vib);
     grp_temp.add(vib.getVIB());
     vib.move(new THREE.Vector3( value.move_to.x, value.move_to.y, value.move_to.z ),value.move_to.r);
@@ -42,7 +42,7 @@ function init_lou() {
   let grp_temp = new THREE.Group();
   parcours_lou.boards.forEach((value) => {
     let position = new THREE.Vector3( value.start_pos.x, value.start_pos.y, value.start_pos.z );
-    let vib = new VirtualImageBoard("./photos/louanne/" + value.img, value.date, value.title, value.text, "louanne/"+value.audio, listener, position);
+    let vib = new VirtualImageBoard("photos/louanne/" + value.img, value.date, value.title, value.text, "louanne/"+value.audio, listener, position);
     ctx.boards.push(vib);
     grp_temp.add(vib.getVIB());
     vib.move(new THREE.Vector3( value.move_to.x, value.move_to.y, value.move_to.z ),value.move_to.r);
@@ -175,7 +175,7 @@ function init_base() {
   //load glb model of expo center
   var expoCENTER = null
   //glbLoader.load( './models/scifi-showroom_reduit_epure_sans_pod.glb', function ( gltf )
-  glbLoader.load( './models/photoGalleryV2.glb', function ( gltf )
+  glbLoader.load( 'models/photoGalleryV2.glb', function ( gltf )
   {
     expoCENTER = gltf.scene;
     expoCENTER.scale.set(10, 10, 10)
@@ -184,7 +184,7 @@ function init_base() {
   } ); 
 
   var solsys = null
-  glbLoader.load( './models/solsystem_fuck_lechel.glb', function ( gltf )
+  glbLoader.load( 'models/solsystem_fuck_lechel.glb', function ( gltf )
   {
     solsys = gltf.scene;
     solsys.scale.set(11, 11, 11)

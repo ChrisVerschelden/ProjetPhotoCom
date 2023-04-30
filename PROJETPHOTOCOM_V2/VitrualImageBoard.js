@@ -70,14 +70,12 @@ class VirtualImageBoard {
     }
 
     build_poster() {
-        var html = `
-            du texte, beaucoup de texte à mettre en dessous
-        `;
-
+        var html = `<div><p> ${this.text} </p></div>`;
+        
         //card container
         const div_card  = document.createElement( 'div' );
             div_card.classList.add("card");
-            div_card.style.opacity = "1";
+            //div_card.style.opacity = "1";
             
         div_card.innerHTML = html ;
 
@@ -89,14 +87,36 @@ class VirtualImageBoard {
         object.css3dObject.element.style.opacity = "1"
         object.position.set( 0, 0, 0 )
 
-        const boxGeometry = new THREE.BoxGeometry( 500 / 18 - 1, 5, 0 ).toNonIndexed();
-        const boxMaterial = new THREE.MeshPhongMaterial( { opacity:0.15,color:new THREE.Color( 0x111111 ),blending:THREE.NoBlending, transparent: true} );
+        const boxGeometry = new THREE.BoxGeometry( 500 / 18 - 1, 6.5, 0.5 ).toNonIndexed();
+        const boxMaterial = new THREE.MeshPhongMaterial( { opacity: 0,color:new THREE.Color( 0x111111 ),blending:THREE.NoBlending, transparent: true} );
         const box = new THREE.Mesh( boxGeometry, boxMaterial );
 
-        box.position.addVectors(this.position, new THREE.Vector3(0, -13.5, 0.5))
+        box.position.addVectors(this.position, new THREE.Vector3(0, -13.5, 0))
         box.rotation.y = 0;
         box.add(object);
-        return box; 
+        return box;
+        
+        //boxGeometry.add(object);
+        //return BoxGeometry; 
+
+        
+        /*
+        // convert the string to dome elements
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = html;
+        var div = wrapper.firstChild;
+
+        // set some values on the div to style it.
+        // normally you do this directly in HTML and 
+        // CSS files.
+        div.style.width = '500px';
+        div.style.height = '50px';
+        div.style.opacity = 0.7;
+        div.style.background = new THREE.Color(Math.random() * 0xffffff).getStyle();
+
+        // create a CSS3Dobject and return it.
+        var object = new CSS3DObject(div);
+        return object;*/
     }
 
     build_edges() {
@@ -139,7 +159,7 @@ class VirtualImageBoard {
         });
     
         var board = new THREE.Mesh( geometry, material );
-        board.position.addVectors(this.position, new THREE.Vector3( 0, 33.5, 0 ))
+        board.position.addVectors(this.position, new THREE.Vector3( 0, 35.5, 0 ))
 
         return board;
     }

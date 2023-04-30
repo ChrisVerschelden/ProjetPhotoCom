@@ -6,8 +6,8 @@ import { VirtualImageBoard } from './VitrualImageBoard.js'
 import {onKeyDown, onKeyUp} from './controls.js'
 import { ctx } from './context.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { parcours_chris } from './parcours/parcours_chris.js';
-import { parcours_lou } from './parcours/parcours_lou';
+import { parcours_chris } from './parcours/parcours_chris';
+import { parcours_lou }   from './parcours/parcours_lou';
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -29,11 +29,12 @@ function init_chris() {
   parcours_chris.boards.forEach((value) => {
     let position = new THREE.Vector3( value.start_pos.x, value.start_pos.y, value.start_pos.z );
     let vib = new VirtualImageBoard("photos/chris/" + value.img, value.date, value.title, value.text, "chris/"+value.audio, listener, position);
+    console.log(value.text)
     ctx.boards.push(vib);
     grp_temp.add(vib.getVIB());
     vib.move(new THREE.Vector3( value.move_to.x, value.move_to.y, value.move_to.z ),value.move_to.r);
   })
-  grp_actif = grp_temp
+  grp_actif.copy(grp_temp)
   init_base();
 }
 

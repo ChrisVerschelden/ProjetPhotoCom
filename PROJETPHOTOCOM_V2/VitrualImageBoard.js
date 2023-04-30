@@ -70,7 +70,7 @@ class VirtualImageBoard {
     }
 
     build_poster() {
-        var html = `<div><p> ${this.text} </p></div>`;
+        var html = `<div>${this.text}</div>`;
         
         //card container
         const div_card  = document.createElement( 'div' );

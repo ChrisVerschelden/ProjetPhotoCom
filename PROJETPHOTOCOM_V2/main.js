@@ -163,7 +163,7 @@ function init_base() {
   } );
 
   controls.addEventListener( 'unlock', () => {
-    //window.location.reload();
+    window.location.reload();
   } );
 
   scene.add( controls.getObject() );

@@ -14,7 +14,7 @@ export const parcours_chris = {
         {
             start_pos: {x:0 , y:0 ,z:0, r:0},
             move_to  : {x:52.5 , y:0 ,z:33.5, r:-2.1899999999999973},
-            img      : "_1110811.JPG",
+            img      : "erreurParcour.png",
             audio    : "1.ogg",
             date     : "01/01/2001",
             title    : "Mon erreur de parcours",
@@ -23,7 +23,7 @@ export const parcours_chris = {
         {
             start_pos: {x:0 , y:0 ,z:0, r:0},
             move_to  : {x:69 , y:0 ,z:-0.5, r:-1.7400000000000035},
-            img      : "autoportrait.png",
+            img      : "chercheur_informatique.jpg",
             audio    : "1.ogg",
             date     : "01/01/2001",
             title    : "Futur à 5 ans 1",
@@ -32,7 +32,7 @@ export const parcours_chris = {
         {
             start_pos: {x:0 , y:0 ,z:0, r:0},
             move_to  : {x:66.5 , y:0 ,z:-45, r:-1.2750000000000044},
-            img      : "guitar.png",
+            img      : "voyage.png",
             audio    : "1.ogg",
             date     : "01/01/2001",
             title    : "Futur à 5 ans 2",
@@ -43,7 +43,7 @@ export const parcours_chris = {
         {
             start_pos: {x:0 , y:0 ,z:0, r:0},
             move_to  : {x:42.5 , y:0 ,z:-83.5, r:-0.8100000000000005},
-            img      : "astronaute.png",
+            img      : "liberte.png",
             audio    : "1.ogg",
             date     : "01/01/2001",
             title    : "Mes attentes socio pro",
@@ -52,7 +52,7 @@ export const parcours_chris = {
         {
             start_pos: {x:0 , y:0 ,z:0, r:0},
             move_to  : {x:8 , y:0 ,z:-104, r:-0.3300000000000001},
-            img      : "photography.png",
+            img      : "personnalite.png",
             audio    : "1.ogg",
             date     : "01/01/2001",
             title    : "Mes traits de personnalité",
@@ -61,7 +61,7 @@ export const parcours_chris = {
         {
             start_pos: {x:0 , y:0 ,z:0, r:0},
             move_to  : {x:-32.5 , y:0 ,z:-106.5, r:0.17000000000000007},
-            img      : "europe.png",
+            img      : "Pentathlon.png",
             audio    : "1.ogg",
             date     : "01/01/2001",
             title    : "Mes passions 1",
@@ -70,7 +70,7 @@ export const parcours_chris = {
         {
             start_pos: {x:0 , y:0 ,z:0, r:0},
             move_to  : {x:-68 , y:0 ,z:-90, r:0.6600000000000005},
-            img      : "esanté.png",
+            img      : "escalade.png",
             audio    : "1.ogg",
             date     : "01/01/2001",
             title    : "Mes passions 2",
@@ -79,7 +79,7 @@ export const parcours_chris = {
         {
             start_pos: {x:0 , y:0 ,z:0, r:0},
             move_to  : {x:-94 , y:0 ,z:-60.5, r:1.0649999999999964},
-            img      : "principeGaelo.png",
+            img      : "robot.png",
             audio    : "1.ogg",
             date     : "01/01/2001",
             title    : "Mes passions 3",
@@ -88,7 +88,7 @@ export const parcours_chris = {
         {
             start_pos: {x:0 , y:0 ,z:0, r:0},
             move_to  : {x:-106 , y:0 ,z:-21.5, r:1.5449999999999884},
-            img      : "AttentesSocioprof.png",
+            img      : "grenouille.png",
             audio    : "1.ogg",
             date     : "01/01/2001",
             title    : "Mes passions 3",
@@ -97,20 +97,20 @@ export const parcours_chris = {
         {
             start_pos: {x:0 , y:0 ,z:0, r:0},
             move_to  : {x:-95.5 , y:0 ,z:22, r:2.0449999999999786},
-            img      : "fonte.png",
+            img      : "merle.JPG",
             audio    : "1.ogg",
             date     : "01/01/2001",
             title    : "Mes passions 4",
-            text     : "Un passereau capturé dans le jardin japonais de Toulouse."
+            text     : "Un merle noir capturé dans le jardin japonais de Toulouse. Oui, celui là à l'air assez gourmand."
         },
         {
             start_pos: {x:0 , y:0 ,z:0, r:0},
             move_to  : {x:-64 , y:0 ,z:55, r:2.544999999999968},
-            img      : "pontVieuxPortait.png",
+            img      : "gendarmes.png",
             audio    : "1.ogg",
             date     : "01/01/2001",
             title    : "Mes passions 5",
-            text     : "Des gendarmes au creux d'une fleur sur les bord de l'étant de Canet-en-Roussillon"
+            text     : "Un couple de gendarmes au creux d'une fleur sur les bord de l'étant de Canet-en-Roussillon"
         }
     ]
 }
